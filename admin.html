@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - Sumit Kumawat Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c10;
+    --surface: #0d1117;
+    --card: #111820;
+    --border: rgba(0,255,170,0.12);
+    --accent: #00ffaa;
+    --accent2: #00c4ff;
+    --accent3: #ff6b6b;
+    --text: #e8edf2;
+    --muted: #6b7a8d;
+    --glow: 0 0 30px rgba(0,255,170,0.25);
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--surface);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem; font-weight: 800;
+    color: var(--accent);
+  }
+  .nav-links {
+    display: flex; gap: 2rem;
+  }
+  .nav-link {
+    color: var(--muted); text-decoration: none;
+    font-family: 'DM Mono', monospace; font-size: 0.8rem;
+    transition: color .2s;
+  }
+  .nav-link:hover { color: var(--accent); }
+
+  /* CONTAINER */
+  .container {
+    max-width: 1200px; margin: 0 auto; padding: 2rem;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center; margin-bottom: 3rem;
+  }
+  .header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem; font-weight: 800;
+    margin-bottom: 1rem;
+  }
+  .header p {
+    color: var(--muted); font-size: 1rem;
+  }
+
+  /* STATS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem; margin-bottom: 3rem;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .stat-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem; font-weight: 800;
+    color: var(--accent);
+  }
+  .stat-label {
+    color: var(--muted); font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+
+  /* TABLE */
+  .table-container {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .table-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .table-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem; font-weight: 700;
+  }
+  .refresh-btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .refresh-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--glow);
+  }
+
+  /* CONTACTS TABLE */
+  .contacts-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .contacts-table th {
+    background: var(--surface);
+    padding: 1rem;
+    text-align: left;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+  }
+  .contacts-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .contacts-table tr:hover {
+    background: rgba(0,255,170,0.05);
+  }
+
+  /* STATUS BADGES */
+  .status-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+  }
+  .status-new {
+    background: rgba(0,255,170,0.2);
+    color: var(--accent);
+  }
+  .status-read {
+    background: rgba(0,196,255,0.2);
+    color: var(--accent2);
+  }
+  .status-replied {
+    background: rgba(255,107,107,0.2);
+    color: var(--accent3);
+  }
+
+  /* ACTION BUTTONS */
+  .action-buttons {
+    display: flex; gap: 0.5rem;
+  }
+  .btn-small {
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    border-radius: 4px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .btn-small:hover {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+  }
+  .btn-delete:hover {
+    background: var(--accent3);
+    border-color: var(--accent3);
+  }
+
+  /* MESSAGE CELL */
+  .message-cell {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* LOADING */
+  .loading {
+    text-align: center; padding: 3rem;
+    color: var(--muted);
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center; padding: 3rem;
+    color: var(--muted);
+  }
+  .empty-state h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem; margin-bottom: 1rem;
+  }
+
+  /* RESPONSIVE */
+  @media(max-width:768px){
+    .container { padding: 1rem; }
+    .nav-links { display: none; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .table-container { overflow-x: auto; }
+    .contacts-table { min-width: 600px; }
+    .message-cell { max-width: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-title">Admin Dashboard</div>
+  <div class="nav-links">
+    <a href="home.html" class="nav-link">Portfolio</a>
+    <a href="#" class="nav-link" onclick="logout()">Logout</a>
+  </div>
+</nav>
+
+<!-- CONTAINER -->
+<div class="container">
+  <!-- HEADER -->
+  <div class="header">
+    <h1>Contact Queries Management</h1>
+    <p>View and manage all contact form submissions from your portfolio</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number" id="totalContacts">0</div>
+      <div class="stat-label">Total Contacts</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="newContacts">0</div>
+      <div class="stat-label">New Messages</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="readContacts">0</div>
+      <div class="stat-label">Read Messages</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="repliedContacts">0</div>
+      <div class="stat-label">Replied Messages</div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-container">
+    <div class="table-header">
+      <div class="table-title">Recent Contacts</div>
+      <button class="refresh-btn" onclick="loadContacts()">Refresh</button>
+    </div>
+    <div id="contactsTable">
+      <div class="loading">Loading contacts...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+let contacts = [];
+
+// Load contacts on page load
+document.addEventListener('DOMContentLoaded', loadContacts);
+
+async function loadContacts() {
+  try {
+    const response = await fetch('http://localhost:3000/api/contacts');
+    const data = await response.json();
+    
+    if (data.success) {
+      contacts = data.contacts;
+      renderContacts();
+      updateStats();
+    } else {
+      console.error('Error loading contacts:', data.message);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    document.getElementById('contactsTable').innerHTML = 
+      '<div class="empty-state"><h3>Error loading contacts</h3><p>Please try again later</p></div>';
+  }
+}
+
+function renderContacts() {
+  const tableContainer = document.getElementById('contactsTable');
+  
+  if (contacts.length === 0) {
+    tableContainer.innerHTML = 
+      '<div class="empty-state"><h3>No contacts yet</h3><p>When people fill out your contact form, they will appear here</p></div>';
+    return;
+  }
+
+  const tableHTML = `
+    <table class="contacts-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Message</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${contacts.map(contact => `
+          <tr>
+            <td>${formatDate(contact.date)}</td>
+            <td>${contact.name}</td>
+            <td>${contact.email}</td>
+            <td class="message-cell" title="${contact.message}">${contact.message}</td>
+            <td>
+              <span class="status-badge status-${contact.status}">${contact.status}</span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                ${contact.status !== 'read' ? `<button class="btn-small" onclick="updateStatus('${contact._id}', 'read')">Mark Read</button>` : ''}
+                ${contact.status !== 'replied' ? `<button class="btn-small" onclick="updateStatus('${contact._id}', 'replied')">Mark Replied</button>` : ''}
+                <button class="btn-small btn-delete" onclick="deleteContact('${contact._id}')">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  
+  tableContainer.innerHTML = tableHTML;
+}
+
+function updateStats() {
+  const stats = {
+    total: contacts.length,
+    new: contacts.filter(c => c.status === 'new').length,
+    read: contacts.filter(c => c.status === 'read').length,
+    replied: contacts.filter(c => c.status === 'replied').length
+  };
+
+  document.getElementById('totalContacts').textContent = stats.total;
+  document.getElementById('newContacts').textContent = stats.new;
+  document.getElementById('readContacts').textContent = stats.read;
+  document.getElementById('repliedContacts').textContent = stats.replied;
+}
+
+async function updateStatus(id, status) {
+  try {
+    const response = await fetch(`http://localhost:3000/api/contacts/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      loadContacts(); // Reload contacts
+    } else {
+      alert('Error updating status: ' + data.message);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error updating status');
+  }
+}
+
+async function deleteContact(id) {
+  if (!confirm('Are you sure you want to delete this contact?')) return;
+  
+  try {
+    const response = await fetch(`http://localhost:3000/api/contacts/${id}`, {
+      method: 'DELETE'
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      loadContacts(); // Reload contacts
+    } else {
+      alert('Error deleting contact: ' + data.message);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Error deleting contact');
+  }
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+}
+
+function logout() {
+  window.location.href = 'home.html';
+}
+
+// Auto-refresh every 30 seconds
+setInterval(loadContacts, 30000);
+</script>
+
+</body>
+</html>
