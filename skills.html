@@ -249,13 +249,161 @@
   .reveal-delay-2 { transition-delay:.2s; }
   .reveal-delay-3 { transition-delay:.3s; }
 
+  /* MOBILE MENU TOGGLE */
+  .menu-toggle {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--accent);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+    position: fixed;
+    top: 1.2rem;
+    right: 2rem;
+    z-index: 1001;
+  }
+  
+  .menu-toggle:hover {
+    background: var(--accent);
+    color: #000;
+    transform: scale(1.05);
+  }
+
+  /* MOBILE SIDEBAR */
+  .mobile-sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    z-index: 2000;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+  }
+
+  .mobile-sidebar.active {
+    right: 0;
+  }
+  
+  .mobile-sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg);
+  }
+  
+  .mobile-sidebar-close {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .mobile-sidebar-close:hover {
+    background: var(--accent);
+    color: #000;
+  }
+  
+  .mobile-sidebar-nav {
+    padding: 1.5rem;
+  }
+  
+  .mobile-sidebar-nav ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    list-style: none;
+  }
+  
+  .mobile-sidebar-nav a {
+    color: var(--text);
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  
+  .mobile-sidebar-nav a:hover {
+    color: var(--accent);
+    background: rgba(0,255,170,0.1);
+  }
+  
+  .mobile-sidebar-nav .nav-cta {
+    background: var(--accent);
+    color: #000;
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+
+  /* OVERLAY */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1999;
+    display: none;
+  }
+
+  .overlay.active {
+    display: block;
+  }
+
   /* RESPONSIVE */
   @media(max-width:900px){
     nav { padding:1.2rem 2rem; }
-    nav ul { display:none; }
-    #hero { padding:7rem 2rem 3rem; }
-    .section-wrap { padding:3rem 2rem 4rem; }
+    
+    /* Mobile Menu */
+    .menu-toggle {
+      display: block;
+    }
+    
+    nav ul {
+      display: none;
+    }
+    
+    #hero { padding:7rem 2rem 4rem; }
+    .hero-grid { grid-template-columns:1fr; text-align:center; }
+    .hero-visual { display:none; }
+    .section-wrap { padding:5rem 2rem; }
+    .skills-grid { grid-template-columns:1fr; gap:2rem; }
+    .skill-card { padding:2rem; }
+    .skill-tags { flex-wrap:wrap; justify-content:center; }
+    .divider { margin:0 2rem; }
     footer { padding:2rem; flex-direction:column; gap:1rem; text-align:center; }
+  }
+
+  @media(max-width:600px){
+    .skills-grid { grid-template-columns:1fr; gap:1.5rem; }
+    .skill-card { padding:1.5rem; }
+    .skill-level { width:100%; }
+    .skill-tags { flex-wrap:wrap; gap:0.5rem; }
+    .tag { font-size:0.7rem; padding:0.3rem 0.6rem; }
+    .mobile-sidebar { width:85%; max-width:280px; }
+    .menu-toggle { top:1rem; right:1rem; padding:0.4rem; }
   }
 </style>
 </head>
@@ -276,7 +424,29 @@
     <li><a href="certifications.html">Certs</a></li>
     <li><a href="contact.html" class="nav-cta">Let's Talk</a></li>
   </ul>
+  <button class="menu-toggle" id="menuToggle">?</button>
 </nav>
+
+<!-- Mobile Sidebar -->
+<div class="mobile-sidebar" id="mobileSidebar">
+  <div class="mobile-sidebar-header">
+    <div class="logo">SK<span>.</span></div>
+    <button class="mobile-sidebar-close" id="sidebarClose">?</button>
+  </div>
+  <div class="mobile-sidebar-nav">
+    <ul>
+      <li><a href="home.html">Home</a></li>
+      <li><a href="skills.html">Skills</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="experience.html">Experience</a></li>
+      <li><a href="certifications.html">Certs</a></li>
+      <li><a href="contact.html" class="nav-cta">Let's Talk</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
 
 <!-- HERO -->
 <section id="hero">
@@ -464,6 +634,33 @@ const barObserver=new IntersectionObserver(entries=>{
   });
 },{threshold:.3});
 document.querySelectorAll('.skill-card').forEach(el=>barObserver.observe(el));
+
+// MOBILE MENU
+const menuToggle = document.getElementById('menuToggle');
+const mobileSidebar = document.getElementById('mobileSidebar');
+const sidebarClose = document.getElementById('sidebarClose');
+const overlay = document.getElementById('overlay');
+
+menuToggle.addEventListener('click', () => {
+  mobileSidebar.classList.add('active');
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+});
+
+sidebarClose.addEventListener('click', closeSidebar);
+overlay.addEventListener('click', closeSidebar);
+
+function closeSidebar() {
+  mobileSidebar.classList.remove('active');
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// Close sidebar when clicking on links
+const sidebarLinks = document.querySelectorAll('.mobile-sidebar-nav a');
+sidebarLinks.forEach(link => {
+  link.addEventListener('click', closeSidebar);
+});
 
 // NAV SCROLL SHRINK
 window.addEventListener('scroll',()=>{
